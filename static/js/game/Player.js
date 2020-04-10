@@ -32,22 +32,24 @@ function Player(x, y) {
         } else if (pressedKeys['down']) {
             this.velX = 0;
             this.velY = -max_vel;
-        } else if (!(pressedKeys['left'] || pressedKeys['right'])) {
-            this.velX = 0;
-        } else if (!(pressedKeys['up'] || pressedKeys['down'])) {
-            this.velY = 0;
+        } else {
+            if (!(pressedKeys['left'] || pressedKeys['right'])) {
+                this.velX = 0;
+            };
+            if (!(pressedKeys['up'] || pressedKeys['down'])) {
+                this.velY = 0;
+            };
         };
-        console.log(pressedKeys);
 
         this.posX += this.velX;
-        this.posY -= this.velY;
+        this.posY += -this.velY;
     };
 
 
     this.draw = function() {
         context.beginPath();
-        context.arc(this.posX, this.posY, 10, 0, 2 * Math.PI, false);
-        context.fillStyle = "red";
+        context.arc(width/2, height/2, 15, 0, 2 * Math.PI, false);
+        context.fillStyle = 'red';
         context.fill();
         context.stroke();
     };

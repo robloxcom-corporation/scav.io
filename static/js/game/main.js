@@ -15,14 +15,13 @@ const keyMap = {
 
 var pressedKeys;
 var player;
+var block;
 
 function init() {
     canvas.width = window.innerWidth - 8;
     canvas.height = window.innerHeight - 20;
     width = canvas.width;
     height = canvas.height;
-
-
     pressedKeys = {
         left: false,
         right: false,
@@ -32,6 +31,13 @@ function init() {
 
 
     player = new Player(500, 500);
+
+    var comp = {
+        'posX': 200,
+        'posY': 100,
+        camera_reference: player
+    };
+    block = new Object(comp);
 
     window.addEventListener('keydown', keydown, false);
     window.addEventListener('keyup', keyup, false);
@@ -43,7 +49,8 @@ function gameloop(timestamp) {
         context.clearRect(0 ,0 , width, height);
         player.move();
         player.draw();
-        
+        block.draw();
+
     window.requestAnimationFrame( gameloop );
 };
 
