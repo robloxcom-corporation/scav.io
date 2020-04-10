@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=dvice-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/colorsheet.css') }}">
@@ -13,7 +13,11 @@
 
     <body>
 
-        <script type="text/javascript" scr="{{ url_for('static', filename='js/main.js') }}"></script>
+        <canvas id="gamecanvas" style="z-index:1">HTML Canvas element not supported in your browser. try chrome, dummy</canvas>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/game/main.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/game/player.js') }}"></script>
+
         
     </body>
 
