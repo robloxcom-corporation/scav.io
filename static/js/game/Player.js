@@ -7,7 +7,9 @@ function Player(component) {
     this.velY = 0;
     this.angle = 0;
     this.equip = component.equip;
-    
+    this.src = component.src;
+    this.img;
+
     
     this.move = function() {
         if (pressedKeys['left'] && pressedKeys['up']) {
@@ -49,16 +51,21 @@ function Player(component) {
 
 
     this.draw = function() {
-        context.save();
-        context.beginPath();
-        context.arc(width/2, height/2, 15, 0, 2 * Math.PI, false);
-        context.fillStyle = 'red';
-        context.fill();
-        context.stroke();
-        context.restore();
+        context.drawImage(this.img, width/2 - 15, height/2 - 15, 30, 30);
+
         for (var i in this.equip) {
             this.equip[i].draw();
         };
+    };
+
+
+    this.init = function() {
+        var img = new Image();
+        img.onloag = function() {
+            context.drawImage(img, width/2 - 15, height/2 - 15, 30, 30);
+        };
+        img.src = this.src;
+        this.img = img;
     };
 
 };

@@ -1,4 +1,5 @@
 #gamecanvas {
     margin: 0;
     overflow: hidden;
+    cursor: none;
 };

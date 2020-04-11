@@ -21,6 +21,7 @@ var equip = [];
 var crosshair = {
     posX: 0,
     posY: 0,
+    src: 'static\\assets\\art\\Scav_Crosshair1.png',
     getAngleToPlayer: function(self) {
         var numer = self.posY - height/2;
         var denom = self.posX - width/2;
@@ -36,9 +37,15 @@ var crosshair = {
         };
     },
     draw: function(self) {
-        context.save();
-        context.fillRect(crosshair.posX, crosshair.posY, 10, 10);
-        context.restore();
+        context.drawImage(crosshair.img, crosshair.posX - 15, crosshair.posY - 15, 30, 30);
+    },
+    init: function(self) {
+        var img = new Image();
+        img.onload = function() {
+            context.drawImage(img, crosshair.posX, crosshair.posY, 50, 50);
+        };
+        img.src = crosshair.src;
+        crosshair.img = img;
     }
 };
 
@@ -55,17 +62,31 @@ function init() {
         down: false
     };
 
+
     equipComp = {
+        'width': 50,
+        'height': 30,
+        'offsetY': 20,
+        'offsetX': 6,
+        src: 'static\\assets\\art\\Scav_Gun1.png',
         flags: ['doesRotate']
     };
     equip.push(new Equipment(equipComp));
+    for (var i in equip) {
+        equip[i].init();
+    };
+
     var comp = {
-        posX: 500,
-        posY: 500,
-        equip: []
+        posX: 0,
+        posY: 0,
+        equip: [],
+        src: 'static\\assets\\art\\Scav_Player1.png'
     };
     comp.equip = equip;
     player = new Player(comp);
+    player.init();
+
+    crosshair.init();
 
     var comp = {
         posX: 200,
@@ -92,7 +113,7 @@ function gameloop(timestamp) {
 
         block.draw();
 
-        crosshair.draw();
+        crosshair.draw(crosshair);
 
     window.requestAnimationFrame( gameloop );
 };
