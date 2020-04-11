@@ -3,6 +3,10 @@ const max_vel = 1;
 function Player(component) {
     this.posX = component.posX;
     this.posY = component.posY;
+    this.width = component.width;
+    this.height = component.height;
+    this.offsetX = component.offsetX;
+    this.offsetY = component.offsetY;
     this.velX = 0;
     this.velY = 0;
     this.angle = 0;
@@ -51,7 +55,7 @@ function Player(component) {
 
 
     this.draw = function() {
-        context.drawImage(this.img, width/2 - 15, height/2 - 15, 30, 30);
+        context.drawImage(this.img, width/2 - this.width/2 + this.offsetX, height/2 - this.height/2 + this.offsetY, this.width, this.height);
 
         for (var i in this.equip) {
             this.equip[i].draw();
@@ -62,7 +66,7 @@ function Player(component) {
     this.init = function() {
         var img = new Image();
         img.onloag = function() {
-            context.drawImage(img, width/2 - 15, height/2 - 15, 30, 30);
+            context.drawImage(img, width/2 - this.width/2 + this.offsetX, height/2 - this.height/2 + this.offsetY, this.width, this.height);
         };
         img.src = this.src;
         this.img = img;

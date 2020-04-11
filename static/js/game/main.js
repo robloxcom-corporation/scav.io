@@ -63,7 +63,7 @@ function init() {
     };
 
 
-    equipComp = {
+    var equipComp = {
         'width': 50,
         'height': 30,
         'offsetY': 20,
@@ -79,6 +79,10 @@ function init() {
     var comp = {
         posX: 0,
         posY: 0,
+        width: 30,
+        height: 30,
+        offsetX: 0,
+        offsetY: 0,
         equip: [],
         src: 'static\\assets\\art\\Scav_Player1.png'
     };
@@ -91,6 +95,10 @@ function init() {
     var comp = {
         posX: 200,
         posY: 100,
+        'width': 15,
+        'height': 15,
+        offsetX: 0,
+        offsetY: 0,
         camera_reference: player,
         flags: ['doesCollide']
     };
