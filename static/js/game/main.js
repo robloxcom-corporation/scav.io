@@ -16,6 +16,32 @@ const keyMap = {
 var pressedKeys;
 var player;
 var block;
+var equip = [];
+
+var crosshair = {
+    posX: 0,
+    posY: 0,
+    getAngleToPlayer: function(self) {
+        var numer = self.posY - height/2;
+        var denom = self.posX - width/2;
+        var ref = Math.abs(Math.atan(numer/denom) * 180 / Math.PI);
+        if (self.posX < width/2 && self.posY < height/2) {
+            return 180 - ref;
+        } else if (self.posX < width/2 && self.posY > height/2) {
+            return 180 + ref;
+        } else if (self.posX > width/2 && self.posY > height/2) {
+            return 360 - ref;
+        } else {
+            return ref;
+        };
+    },
+    draw: function(self) {
+        context.save();
+        context.fillRect(crosshair.posX, crosshair.posY, 10, 10);
+        context.restore();
+    }
+};
+
 
 function init() {
     canvas.width = window.innerWidth - 8;
@@ -29,27 +55,44 @@ function init() {
         down: false
     };
 
-
-    player = new Player(500, 500);
+    equipComp = {
+        flags: ['doesRotate']
+    };
+    equip.push(new Equipment(equipComp));
+    var comp = {
+        posX: 500,
+        posY: 500,
+        equip: []
+    };
+    comp.equip = equip;
+    player = new Player(comp);
 
     var comp = {
-        'posX': 200,
-        'posY': 100,
-        camera_reference: player
+        posX: 200,
+        posY: 100,
+        camera_reference: player,
+        flags: ['doesCollide']
     };
     block = new Object(comp);
 
+
     window.addEventListener('keydown', keydown, false);
     window.addEventListener('keyup', keyup, false);
+    document.captureEvents(Event.MOUSEMOVE);
+    document.onmousemove = updateMousePos;
 };
 
 
 function gameloop(timestamp) {
 
         context.clearRect(0 ,0 , width, height);
+        
         player.move();
         player.draw();
+
         block.draw();
+
+        crosshair.draw();
 
     window.requestAnimationFrame( gameloop );
 };
@@ -73,5 +116,12 @@ function keyup(event) {
     var key = keyMap[event.keyCode];
     pressedKeys[key] = false;
 };
+
+function updateMousePos(event) {
+    crosshair.posX = event.clientX;
+    crosshair.posY = event.clientY;
+    player.angle = crosshair.getAngleToPlayer(crosshair);
+};
+
 
 window.onload = function () { init(); gameloop() };

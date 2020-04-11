@@ -1,11 +1,13 @@
 const max_vel = 1;
 
-function Player(x, y) {
-    this.posX = x;
-    this.posY = y;
+function Player(component) {
+    this.posX = component.posX;
+    this.posY = component.posY;
     this.velX = 0;
     this.velY = 0;
     this.angle = 0;
+    this.equip = component.equip;
+    
     
     this.move = function() {
         if (pressedKeys['left'] && pressedKeys['up']) {
@@ -47,11 +49,16 @@ function Player(x, y) {
 
 
     this.draw = function() {
+        context.save();
         context.beginPath();
         context.arc(width/2, height/2, 15, 0, 2 * Math.PI, false);
         context.fillStyle = 'red';
         context.fill();
         context.stroke();
+        context.restore();
+        for (var i in this.equip) {
+            this.equip[i].draw();
+        };
     };
 
 };
