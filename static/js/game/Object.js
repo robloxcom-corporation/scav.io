@@ -63,4 +63,19 @@ function Object(component) {
 
     };
 
+
+    this.addFlag = function(flag) {
+        this.flags.push(flag);
+    };
+    this.removeFlag = function(flag) {
+        var arr = []
+        for (var i in this.flags) {
+            if (this.flags[i] != flag) {
+                arr.push(this.flags[i]);
+            };
+        };
+    this.flags = arr;
+    };
+
+
 };

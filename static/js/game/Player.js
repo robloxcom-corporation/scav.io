@@ -87,10 +87,24 @@ function Player(component) {
     this.init = function() {
         var img = new Image();
         img.onload = function() {
-            
+
         };
         img.src = this.src;
         this.img = img;
+    };
+
+
+    this.addFlag = function(flag) {
+        this.flags.push(flag);
+    };
+    this.removeFlag = function(flag) {
+        var arr = []
+        for (var i in this.flags) {
+            if (this.flags[i] != flag) {
+                arr.push(this.flags[i]);
+            };
+        };
+    this.flags = arr;
     };
 
 };
