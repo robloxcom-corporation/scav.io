@@ -7,19 +7,29 @@ function Object(component) {
     this.lastPosY = component.posY;
     this.width = component.width;
     this.height = component.height;
-    this.offsetX = component.offsetX;
-    this.offsetY = component.offsetY;
+    this.drawWidth = getDrawDimention(this.width);
+    this.drawHeight = getDrawDimention(this.height);
+    if (component.offsetX) { this.offsetX = component.offsetX; } else { this.offsetX = 0; };
+    if (component.offsetY) { this.offsetY = component.offsetY; } else { this.offsetY = 0; };
     this.ref = component.camera_reference;
+    var pos = getDrawPos(this.posX, this.posY, this.offsetX, this.offsetY, this.ref);
+    this.drawPosX = pos.drawPosX;
+    this.drawPosY = pos.drawPosY;
     if (component.flags) { this.flags = component.flags; } else { this.flags = [] };
 
     this.draw = function() {
-        var x = this.posX - this.width/2 - this.ref.posX + this.ref.drawPosX;
-        if (this.offsetX) {x += this.offsetX};
-        var y = this.posY - this.height/2 - this.ref.posY + this.ref.drawPosY;
-        if (this.offsetY) {y += this.offsetY};
-        
+        this.drawWidth = getDrawDimention(this.width);
+        this.drawHeight = getDrawDimention(this.height);
+        var pos = getDrawPos(this.posX, this.posY, this.offsetX, this.offsetY, this.ref)
+        this.drawPosX = pos.drawPosX;
+        this.drawPosY = pos.drawPosY;    
+        var x = this.drawPosX - this.drawWidth/2;
+        var y = this.drawPosY - this.drawHeight/2;
+    
+
         context.save();
-        context.fillRect(x, y, this.width, this.height);
+        context.fillStyle = component.color;
+        context.fillRect(x, y, this.drawWidth, this.drawHeight);
         context.restore();
     };
 

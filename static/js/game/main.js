@@ -12,10 +12,14 @@ const keyMap = {
     40: 'down', // down arrow
     83: 'down', // s
 };
+var globalFlags = ['drawCrosshair'];
+var cameraScale = 1;
+
 
 var pressedKeys;
 var player;
 var block;
+var block2;
 var equip = [];
 var objects = [];
 
@@ -70,8 +74,8 @@ function init() {
     var comp = {
         posX: 0,
         posY: 0,
-        width: 30,
-        height: 30,
+        width: 70,
+        height: 70,
         offsetX: 0,
         offsetY: 0,
         src: 'static\\assets\\art\\Scav_Player1.png',
@@ -81,10 +85,10 @@ function init() {
     player.init();
 
     var equipComp = {
-        'width': 50,
-        'height': 30,
-        'offsetY': 20,
-        'offsetX': 6,
+        'width': 100,
+        'height': 60,
+        'offsetX': defaultOffsetX,
+        'offsetY': defaultOffsetY,
         src: 'static\\assets\\art\\Scav_Gun1.png',
         flags: ['doesRotate'],
         player: player
@@ -103,11 +107,26 @@ function init() {
         'height': 15,
         offsetX: 0,
         offsetY: 0,
+        color: 'blue',
         camera_reference: player,
         flags: ['doesCollide']
     };
     block = new Object(comp);
     objects.push(block);
+
+    var comp = {
+        posX: 200,
+        posY: 115,
+        'width': 15,
+        'height': 15,
+        offsetX: 0,
+        offsetY: 0,
+        color: 'red',
+        camera_reference: player,
+        flags: ['doesCollide']
+    };
+    block2 = new Object(comp);
+    objects.push(block2);
 
 
     window.addEventListener('keydown', keydown, false);
@@ -119,14 +138,18 @@ function init() {
 
 function gameloop(timestamp) {
         context.clearRect(0 ,0 , width, height);
+
         player.move();
         block.collision(player);
-
+        block2.collision(player);
 
         player.draw();
         block.draw();
+        block2.draw();
 
-        crosshair.draw(crosshair);
+        if (globalFlags.includes('drawCrosshair')) { crosshair.draw(crosshair); };
+        if (globalFlags.includes('drawScreenCenter')) { drawScreenCenter(); };
+
 
     window.requestAnimationFrame( gameloop );
 };
@@ -157,5 +180,41 @@ function updateMousePos(event) {
     player.angle = crosshair.getAngleToPlayer(crosshair);
 };
 
+function getDrawPos(posX, posY, offsetX, offsetY, camera_reference) {
+    var drawPosX = ((posX + offsetX - camera_reference.posX) * cameraScale) + camera_reference.drawPosX;
+    var drawPosY = ((posY + offsetY - camera_reference.posY) * cameraScale) + camera_reference.drawPosY;
+    return {drawPosX: drawPosX, drawPosY: drawPosY};
+};
+
+function getDrawDimention(dimention) {
+    return drawDimention = dimention * cameraScale;
+};
+
+function drawScreenCenter() {
+    context.save();
+    context.strokeStyle = 'red';
+    context.beginPath();
+    context.moveTo(width/2, 0);
+    context.lineTo(width/2, height);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(0, height/2);
+    context.lineTo(width, height/2);
+    context.stroke();
+    context.restore();
+};
+
+addFlag = function(flag) {
+    globalFlags.push(flag);
+};
+removeFlag = function(flag) {
+    var arr = []
+    for (var i in globalFlags) {
+        if (globalFlags[i] != flag) {
+            arr.push(globalFlags[i]);
+        };
+    };
+    globalFlags = arr;
+};
 
 window.onload = function () { init(); gameloop() };

@@ -8,8 +8,10 @@ function Player(component) {
     this.lastPosY = component.posY;
     this.width = component.width;
     this.height = component.height;
-    this.offsetX = component.offsetX;
-    this.offsetY = component.offsetY;
+    this.drawWidth = getDrawDimention(this.width);
+    this.drawHeight = getDrawDimention(this.height);
+    if (component.offsetX) { this.offsetX = component.offsetX; } else { this.offsetX = 0; };
+    if (component.offsetY) { this.offsetY = component.offsetY; } else { this.offsetY = 0; };
     this.drawPosX = width/2;
     this.drawPosY = height/2;
     this.velX = 0;
@@ -65,11 +67,13 @@ function Player(component) {
 
 
     this.draw = function() {
-        var x = this.drawPosX - this.width/2  //width/2
-        if (this.offsetX) { x += this.offsetX };
-        var y = this.drawPosY - this.height/2;
-        if (this.offsetY) ( y += this.offsetY );
-        context.drawImage(this.img, x, y, this.width, this.height);
+        this.drawWidth = getDrawDimention(this.width);
+        this.drawHeight = getDrawDimention(this.height);
+        var x = this.drawPosX - this.drawWidth/2;
+        var y = this.drawPosY - this.drawHeight/2;
+    
+
+        context.drawImage(this.img, x, y, this.drawWidth, this.drawHeight);
 
         for (var i in this.equip) {
             this.equip[i].draw();
@@ -78,7 +82,7 @@ function Player(component) {
         if (this.flags.includes('drawHitbox')) {
             context.save();
             context.strokeStyle = 'red';
-            context.strokeRect(width/2 - this.width/2, height/2 - this.height/2, this.width, this.height);
+            context.strokeRect(x, y, this.drawWidth, this.drawHeight);
             context.restore();    
         };
     };
