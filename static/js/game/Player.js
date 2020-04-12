@@ -1,21 +1,31 @@
 const max_vel = 1;
 
 function Player(component) {
+    this.component = component;
     this.posX = component.posX;
     this.posY = component.posY;
+    this.lastPosX = component.posX;
+    this.lastPosY = component.posY;
     this.width = component.width;
     this.height = component.height;
     this.offsetX = component.offsetX;
     this.offsetY = component.offsetY;
+    this.drawPosX = width/2;
+    this.drawPosY = height/2;
     this.velX = 0;
     this.velY = 0;
     this.angle = 0;
     this.equip = component.equip;
     this.src = component.src;
     this.img;
+    if (component.flags) { this.flags = component.flags; } else { this.flags = [] };
+
 
     
     this.move = function() {
+        this.lastPosX = this.posX;
+        this.lastPosY = this.posY;
+
         if (pressedKeys['left'] && pressedKeys['up']) {
             this.velX = -max_vel * Math.sqrt(2)/2;
             this.velY = max_vel * Math.sqrt(2)/2;
@@ -55,18 +65,29 @@ function Player(component) {
 
 
     this.draw = function() {
-        context.drawImage(this.img, width/2 - this.width/2 + this.offsetX, height/2 - this.height/2 + this.offsetY, this.width, this.height);
+        var x = this.drawPosX - this.width/2  //width/2
+        if (this.offsetX) { x += this.offsetX };
+        var y = this.drawPosY - this.height/2;
+        if (this.offsetY) ( y += this.offsetY );
+        context.drawImage(this.img, x, y, this.width, this.height);
 
         for (var i in this.equip) {
             this.equip[i].draw();
+        };
+
+        if (this.flags.includes('drawHitbox')) {
+            context.save();
+            context.strokeStyle = 'red';
+            context.strokeRect(width/2 - this.width/2, height/2 - this.height/2, this.width, this.height);
+            context.restore();    
         };
     };
 
 
     this.init = function() {
         var img = new Image();
-        img.onloag = function() {
-            context.drawImage(img, width/2 - this.width/2 + this.offsetX, height/2 - this.height/2 + this.offsetY, this.width, this.height);
+        img.onload = function() {
+            
         };
         img.src = this.src;
         this.img = img;

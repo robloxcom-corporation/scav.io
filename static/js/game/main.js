@@ -17,6 +17,7 @@ var pressedKeys;
 var player;
 var block;
 var equip = [];
+var objects = [];
 
 var crosshair = {
     posX: 0,
@@ -63,18 +64,8 @@ function init() {
     };
 
 
-    var equipComp = {
-        'width': 50,
-        'height': 30,
-        'offsetY': 20,
-        'offsetX': 6,
-        src: 'static\\assets\\art\\Scav_Gun1.png',
-        flags: ['doesRotate']
-    };
-    equip.push(new Equipment(equipComp));
-    for (var i in equip) {
-        equip[i].init();
-    };
+    crosshair.init();
+
 
     var comp = {
         posX: 0,
@@ -83,14 +74,27 @@ function init() {
         height: 30,
         offsetX: 0,
         offsetY: 0,
-        equip: [],
-        src: 'static\\assets\\art\\Scav_Player1.png'
+        src: 'static\\assets\\art\\Scav_Player1.png',
+        flags: []
     };
-    comp.equip = equip;
     player = new Player(comp);
     player.init();
 
-    crosshair.init();
+    var equipComp = {
+        'width': 50,
+        'height': 30,
+        'offsetY': 20,
+        'offsetX': 6,
+        src: 'static\\assets\\art\\Scav_Gun1.png',
+        flags: ['doesRotate'],
+        player: player
+    };
+    equip.push(new Equipment(equipComp));
+    player.equip = equip;
+    for (var i in equip) {
+        equip[i].init();
+    };
+
 
     var comp = {
         posX: 200,
@@ -103,6 +107,7 @@ function init() {
         flags: ['doesCollide']
     };
     block = new Object(comp);
+    objects.push(block);
 
 
     window.addEventListener('keydown', keydown, false);
@@ -113,12 +118,12 @@ function init() {
 
 
 function gameloop(timestamp) {
-
         context.clearRect(0 ,0 , width, height);
-        
         player.move();
-        player.draw();
+        block.collision(player);
 
+
+        player.draw();
         block.draw();
 
         crosshair.draw(crosshair);
