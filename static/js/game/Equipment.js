@@ -7,8 +7,9 @@ function Equipment(component) {
     this.img;
     this.width = component.width;
     this.height = component.height;
-    this.drawWidth = getDrawDimention(this.width);
-    this.drawHeight = getDrawDimention(this.height);
+    var drawDims = getDrawDimentions(this.width, this.height);
+    this.drawWidth = drawDims.drawWidth;
+    this.drawHeight = drawDims.drawHeight;
     if (component.offsetX) { this.offsetX = component.offsetX; } else { this.offsetX = defaultOffsetX; };
     if (component.offsetY) { this.offsetY = component.offsetY; } else { this.offsetY = defaultOffsetY; };
     if (component.player) { this.player = component.player; } else { this.player = player; };
@@ -19,8 +20,9 @@ function Equipment(component) {
 
 
     this.draw = function() {
-        this.drawWidth = getDrawDimention(this.width);
-        this.drawHeight = getDrawDimention(this.height);
+        var drawDims = getDrawDimentions(this.width, this.height);
+        this.drawWidth = drawDims.drawWidth;
+        this.drawHeight = drawDims.drawHeight;
         var pos = getDrawPos(this.player.posX, this.player.posY, this.offsetX, this.offsetY, this.player);
         this.drawPosX = pos.drawPosX;
         this.drawPosY = pos.drawPosY;    

@@ -8,8 +8,9 @@ function Player(component) {
     this.lastPosY = component.posY;
     this.width = component.width;
     this.height = component.height;
-    this.drawWidth = getDrawDimention(this.width);
-    this.drawHeight = getDrawDimention(this.height);
+    var drawDims = getDrawDimentions(this.width, this.height);
+    this.drawWidth = drawDims.drawWidth;
+    this.drawHeight = drawDims.drawHeight;
     if (component.offsetX) { this.offsetX = component.offsetX; } else { this.offsetX = 0; };
     if (component.offsetY) { this.offsetY = component.offsetY; } else { this.offsetY = 0; };
     this.drawPosX = width/2;
@@ -67,14 +68,18 @@ function Player(component) {
 
 
     this.draw = function() {
-        this.drawWidth = getDrawDimention(this.width);
-        this.drawHeight = getDrawDimention(this.height);
+        var drawDims = getDrawDimentions(this.width, this.height);
+        this.drawWidth = drawDims.drawWidth;
+        this.drawHeight = drawDims.drawHeight;
         var x = this.drawPosX - this.drawWidth/2;
         var y = this.drawPosY - this.drawHeight/2;
     
-
-        context.drawImage(this.img, x, y, this.drawWidth, this.drawHeight);
-
+        context.save()
+        context.translate(this.drawPosX, this.drawPosY);
+        context.rotate(-player.angle * Math.PI / 180);
+        context.drawImage(this.img, -this.drawWidth/2, -this.drawHeight/2, this.drawWidth, this.drawHeight);
+        context.restore()
+        
         for (var i in this.equip) {
             this.equip[i].draw();
         };

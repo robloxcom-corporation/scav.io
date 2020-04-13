@@ -13,7 +13,8 @@ const keyMap = {
     83: 'down', // s
 };
 var globalFlags = ['drawCrosshair'];
-var cameraScale = 1;
+var cameraScaleX = 1;
+var cameraScaleY = 1;
 
 
 var pressedKeys;
@@ -78,7 +79,7 @@ function init() {
         height: 70,
         offsetX: 0,
         offsetY: 0,
-        src: 'static\\assets\\art\\Scav_Player1.png',
+        src: 'static\\assets\\art\\PlayerTest2.svg',
         flags: []
     };
     player = new Player(comp);
@@ -181,13 +182,13 @@ function updateMousePos(event) {
 };
 
 function getDrawPos(posX, posY, offsetX, offsetY, camera_reference) {
-    var drawPosX = ((posX + offsetX - camera_reference.posX) * cameraScale) + camera_reference.drawPosX;
-    var drawPosY = ((posY + offsetY - camera_reference.posY) * cameraScale) + camera_reference.drawPosY;
+    var drawPosX = ((posX + offsetX - camera_reference.posX) * cameraScaleX) + camera_reference.drawPosX;
+    var drawPosY = ((posY + offsetY - camera_reference.posY) * cameraScaleY) + camera_reference.drawPosY;
     return {drawPosX: drawPosX, drawPosY: drawPosY};
 };
 
-function getDrawDimention(dimention) {
-    return drawDimention = dimention * cameraScale;
+function getDrawDimentions(width, height) {
+    return { drawWidth: width * cameraScaleX, drawHeight: height * cameraScaleY };
 };
 
 function drawScreenCenter() {

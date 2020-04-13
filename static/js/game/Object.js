@@ -7,8 +7,9 @@ function Object(component) {
     this.lastPosY = component.posY;
     this.width = component.width;
     this.height = component.height;
-    this.drawWidth = getDrawDimention(this.width);
-    this.drawHeight = getDrawDimention(this.height);
+    var drawDims = getDrawDimentions(this.width, this.height);
+    this.drawWidth = drawDims.drawWidth;
+    this.drawHeight = drawDims.drawHeight;
     if (component.offsetX) { this.offsetX = component.offsetX; } else { this.offsetX = 0; };
     if (component.offsetY) { this.offsetY = component.offsetY; } else { this.offsetY = 0; };
     this.ref = component.camera_reference;
@@ -18,8 +19,9 @@ function Object(component) {
     if (component.flags) { this.flags = component.flags; } else { this.flags = [] };
 
     this.draw = function() {
-        this.drawWidth = getDrawDimention(this.width);
-        this.drawHeight = getDrawDimention(this.height);
+        var drawDims = getDrawDimentions(this.width, this.height);
+        this.drawWidth = drawDims.drawWidth;
+        this.drawHeight = drawDims.drawHeight;
         var pos = getDrawPos(this.posX, this.posY, this.offsetX, this.offsetY, this.ref)
         this.drawPosX = pos.drawPosX;
         this.drawPosY = pos.drawPosY;    
