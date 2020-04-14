@@ -17,6 +17,7 @@ function Object(component) {
     this.drawPosX = pos.drawPosX;
     this.drawPosY = pos.drawPosY;
     if (component.flags) { this.flags = component.flags; } else { this.flags = [] };
+    if (component.xIndex) { this.zIndex = component.zIndex; } else { this.zIndex = 1; };
 
     this.draw = function() {
         var drawDims = getDrawDimentions(this.width, this.height);
@@ -63,15 +64,39 @@ function Object(component) {
         if (playerBottom < objectTop || playerTop > objectBottom || playerLeft > objectRight || playerRight < objectLeft) {
             return;
         };
-        if (playerBottom >= objectTop && lastPlayerBottom < lastObjectTop) {
-            player.posY = objectTop - player.width/2 - 0.1;
-        } else if (playerTop <= objectBottom && lastPlayerTop > lastObjectBottom) {
-            player.posY = objectBottom + player.width/2 + 0.1;
-        } else if (playerRight >= objectLeft && lastPlayerRight < lastObjectLeft) {
-            player.posX = objectLeft - player.width/2 - 0.1;
-        } else if (playerLeft <= objectRight && lastPlayerLeft > lastObjectRight) {
-            player.posX = objectRight + player.width/2 + 0.1;
+        if ( ((playerBottom >= objectTop && lastPlayerBottom < lastObjectTop) && (playerLeft <= objectRight && lastPlayerLeft > lastObjectRight)) 
+        || ((playerBottom >= objectTop && lastPlayerBottom < lastObjectTop) && (playerRight >= objectLeft && lastPlayerRight < lastObjectLeft)) 
+        || ((playerTop <= objectBottom && lastPlayerTop > lastObjectBottom) && (playerLeft <= objectRight && lastPlayerLeft > lastObjectRight)) 
+        || ((playerTop <= objectBottom && lastPlayerTop > lastObjectBottom) && (playerRight >= objectLeft && lastPlayerRight < lastObjectLeft)) ) {
+            if (player.lastPosX == player.posX) {
+                colY();
+                return;
+            }; 
+            if (player.lastPosY = player.posY) {
+                colX();
+                return;
+            };
+
         };
+
+        colX();
+        colY();
+        
+        function colX() {
+            if (playerRight >= objectLeft && lastPlayerRight < lastObjectLeft) {
+                player.posX = objectLeft - player.width/2 - 0.1;
+            } else if (playerLeft <= objectRight && lastPlayerLeft > lastObjectRight) {
+                player.posX = objectRight + player.width/2 + 0.1;
+            };
+        };
+        function colY() {
+            if (playerBottom >= objectTop && lastPlayerBottom < lastObjectTop) {
+                player.posY = objectTop - player.width/2 - 0.1;
+            } else if (playerTop <= objectBottom && lastPlayerTop > lastObjectBottom) {
+                player.posY = objectBottom + player.width/2 + 0.1;
+            };
+        };
+
 
     };
 

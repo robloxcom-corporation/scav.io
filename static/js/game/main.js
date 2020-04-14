@@ -19,15 +19,13 @@ var cameraScaleY = 1;
 
 var pressedKeys;
 var player;
-var block;
-var block2;
 var equip = [];
 var objects = [];
 
 var crosshair = {
     posX: 0,
     posY: 0,
-    src: 'static\\assets\\art\\Scav_Crosshair1.png',
+    src: 'static\\assets\\art\\Scav_Crosshair1.svg',
     getAngleToPlayer: function(self) {
         var numer = self.posY - height/2;
         var denom = self.posX - width/2;
@@ -86,11 +84,11 @@ function init() {
     player.init();
 
     var equipComp = {
-        'width': 100,
-        'height': 60,
+        'width': 43,
+        'height': 11,
         'offsetX': defaultOffsetX,
         'offsetY': defaultOffsetY,
-        src: 'static\\assets\\art\\Scav_Gun1.png',
+        src: 'static\\assets\\art\\Scav_Gun1.svg',
         flags: ['doesRotate'],
         player: player
     };
@@ -110,10 +108,10 @@ function init() {
         offsetY: 0,
         color: 'blue',
         camera_reference: player,
-        flags: ['doesCollide']
+        flags: ['doesCollide'],
+        zIndex: 1
     };
-    block = new Object(comp);
-    objects.push(block);
+    objects.push(new Object(comp));
 
     var comp = {
         posX: 200,
@@ -124,10 +122,10 @@ function init() {
         offsetY: 0,
         color: 'red',
         camera_reference: player,
-        flags: ['doesCollide']
+        flags: ['doesCollide'],
+        zIndex: 2
     };
-    block2 = new Object(comp);
-    objects.push(block2);
+    objects.push(new Object(comp));
 
 
     window.addEventListener('keydown', keydown, false);
@@ -141,12 +139,23 @@ function gameloop(timestamp) {
         context.clearRect(0 ,0 , width, height);
 
         player.move();
-        block.collision(player);
-        block2.collision(player);
+        for (var i in objects) {
+            objects[i].collision(player);
+        };
 
-        player.draw();
-        block.draw();
-        block2.draw();
+        var drawnObjects = []
+        drawnObjects = drawnObjects.concat(objects);
+        drawnObjects.push(player);
+        drawnObjects.sort(function(a, b) {
+            if (a.zIndex > b.zIndex) {
+                return 1;
+            } else if (a.zIndex < b.zIndex) {
+                return -1;
+            } else { return 0 };
+        });
+        for (var i in drawnObjects) {
+            drawnObjects[i].draw();
+        };
 
         if (globalFlags.includes('drawCrosshair')) { crosshair.draw(crosshair); };
         if (globalFlags.includes('drawScreenCenter')) { drawScreenCenter(); };
