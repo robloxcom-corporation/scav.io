@@ -17,6 +17,7 @@ function Equipment(component) {
     this.drawPosX = pos.drawPosX;
     this.drawPosY = pos.drawPosY;
     if (component.flags) { this.flags = component.flags; } else { this.flags = []; };
+    if (component.invPos) { this.invPos = component.invPos; } else { this.invPos = player.hotbar.contents.length + 1; };
 
 
     this.draw = function() {
@@ -29,21 +30,22 @@ function Equipment(component) {
         var x = this.drawPosX - this.drawWidth/2;
         var y = this.drawPosY - this.drawHeight/2;
 
-
-        context.save();
-        if (this.flags.includes('doesRotate')) {
-            context.translate(this.player.drawPosX, this.player.drawPosY);
-            context.rotate(-this.player.angle * Math.PI/180);
-            context.drawImage(this.img, x - this.player.drawPosX, y - this.player.drawPosY, this.drawWidth, this.drawHeight);
-        } else {
-            context.translate(this.player.drawPosX, this.player.drawPosY);
-            context.drawImage(this.img, this.player.drawPosX - x, this.player.drawPosY - y, this.drawWidth, this.drawHeight);
+        if (this.flags.includes('drawModel')) {
+            context.save();
+            if (this.flags.includes('doesRotate')) {
+                context.translate(this.player.drawPosX, this.player.drawPosY);
+                context.rotate(-this.player.angle * Math.PI/180);
+                context.drawImage(this.img, x - this.player.drawPosX, y - this.player.drawPosY, this.drawWidth, this.drawHeight);
+            } else {
+                context.translate(this.player.drawPosX, this.player.drawPosY);
+                context.drawImage(this.img, this.player.drawPosX - x, this.player.drawPosY - y, this.drawWidth, this.drawHeight);
+            };
+            if (this.flags.includes('drawHitbox')) {
+                context.strokeStyle = 'red';
+                context.strokeRect(this.player.drawPosX - x, this.player.drawPosY - y, this.drawWidth, this.drawHeight);
+            };
+            context.restore();
         };
-        if (this.flags.includes('drawHitbox')) {
-            context.strokeStyle = 'red';
-            context.strokeRect(this.player.drawPosX - x, this.player.drawPosY - y, this.drawWidth, this.drawHeight);
-        };
-        context.restore();
     };
 
     this.init = function() {

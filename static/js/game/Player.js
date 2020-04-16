@@ -18,9 +18,13 @@ function Player(component) {
     this.velX = 0;
     this.velY = 0;
     this.angle = 0;
-    this.equip = component.equip;
     this.src = component.src;
     this.img;
+    if (component.hotbar) { this.hotbar = component.hotbar; } else { this.hotbar; };
+    if (component.rig) { this.rig = component.rig; } else { this.rig; };
+    if (component.backpack) { this.backpack = componet.backpack; } else { this.backpack; };
+    if (component.armor) { this.armor = component.armor; } else { this.armor; };
+    if (component.helmet) { this.helmet = component.helmet; } else { this.helet; };
     if (component.flags) { this.flags = component.flags; } else { this.flags = [] };
 
 
@@ -80,8 +84,8 @@ function Player(component) {
         context.drawImage(this.img, -this.drawWidth/2, -this.drawHeight/2, this.drawWidth, this.drawHeight);
         context.restore()
         
-        for (var i in this.equip) {
-            this.equip[i].draw();
+        for (var i in this.hotbar.contents) {
+            this.hotbar.contents[i].draw();
         };
 
         if (this.flags.includes('drawHitbox')) {

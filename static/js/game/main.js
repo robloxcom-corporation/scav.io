@@ -19,8 +19,9 @@ var cameraScaleY = 1;
 
 var pressedKeys;
 var player;
-var equip = [];
 var objects = [];
+var invPos = 0;
+var maxInvPos = 1;
 
 var crosshair = {
     posX: 0,
@@ -78,24 +79,44 @@ function init() {
         offsetX: 0,
         offsetY: 0,
         src: 'static\\assets\\art\\PlayerTest2.svg',
-        flags: []
+        flags: [],
     };
     player = new Player(comp);
     player.init();
 
+
+
+    var hotbarComponent = {
+        dimentions: {x: 6, y:1},
+        contents: []
+    };
+    player.hotbar = new Container(hotbarComponent);
     var equipComp = {
         'width': 43,
         'height': 11,
         'offsetX': defaultOffsetX,
         'offsetY': defaultOffsetY,
         src: 'static\\assets\\art\\Scav_Gun1.svg',
-        flags: ['doesRotate'],
-        player: player
+        flags: ['doesRotate', 'drawModel'],
+        player: player,
+        invPos: 0,
+        container: player.hotbar
     };
-    equip.push(new Equipment(equipComp));
-    player.equip = equip;
-    for (var i in equip) {
-        equip[i].init();
+    player.hotbar.contents.push(new Equipment(equipComp))
+    var equipComp = {
+        'width': 43,
+        'height': 11,
+        'offsetX': defaultOffsetX,
+        'offsetY': defaultOffsetY,
+        src: 'static\\assets\\art\\Scav_Gun2.png',
+        flags: ['doesRotate'],
+        player: player,
+        invPos: 1,
+        container: player.hotbar
+    };
+    player.hotbar.contents.push(new Equipment(equipComp))
+    for (var i in hotbarComponent.contents) {
+        hotbarComponent.contents[i].init();
     };
 
 
@@ -126,6 +147,24 @@ function init() {
         zIndex: 2
     };
     objects.push(new Object(comp));
+
+
+    window.addEventListener('wheel', function(e) {
+        var lastInvPos = invPos;
+        if (e.deltaY > 0) {
+            invPos++;
+        } else {
+            invPos--;
+        };
+        if (invPos > maxInvPos) {
+            invPos = 0;
+        } else if (invPos < 0) {
+            invPos = maxInvPos;
+        };
+
+        player.hotbar.contents[lastInvPos].removeFlag('drawModel');
+        player.hotbar.contents[invPos].addFlag('drawModel');
+    });
 
 
     window.addEventListener('keydown', keydown, false);
