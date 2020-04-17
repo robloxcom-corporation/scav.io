@@ -21,7 +21,7 @@ var pressedKeys;
 var player;
 var objects = [];
 var invPos = 0;
-var maxInvPos = 1;
+var maxInvPos = 5;
 
 var crosshair = {
     posX: 0,
@@ -92,29 +92,38 @@ function init() {
     };
     player.hotbar = new Container(hotbarComponent);
     var equipComp = {
-        'width': 43,
-        'height': 11,
-        'offsetX': defaultOffsetX,
-        'offsetY': defaultOffsetY,
+        width: 43,
+        height: 11,
+        offsetX: defaultOffsetX,
+        offsetY: defaultOffsetY,
         src: 'static\\assets\\art\\Scav_Gun1.svg',
         flags: ['doesRotate', 'drawModel'],
         player: player,
-        invPos: 0,
         container: player.hotbar
     };
-    player.hotbar.contents.push(new Equipment(equipComp))
+    player.hotbar.contents.push(new Equipment(equipComp));
     var equipComp = {
-        'width': 43,
-        'height': 11,
-        'offsetX': defaultOffsetX,
-        'offsetY': defaultOffsetY,
+        width: 43,
+        height: 11,
+        offsetX: defaultOffsetX,
+        offsetY: defaultOffsetY,
         src: 'static\\assets\\art\\Scav_Gun2.png',
         flags: ['doesRotate'],
         player: player,
-        invPos: 1,
         container: player.hotbar
     };
-    player.hotbar.contents.push(new Equipment(equipComp))
+    player.hotbar.contents.push(new Equipment(equipComp));
+    var equipComp = {
+        width: 0,
+        height: 0,
+        offsetX: 0,
+        offsetY: 0,
+        src: 'static\\assets\\art\\Scav_Gun1.svg',
+        flags: ['doesRotate', 'drawModel'],
+        player: player,
+        container: player.hotbar
+    };
+    player.hotbar.contents.push(new Equipment(equipComp));
     for (var i in hotbarComponent.contents) {
         hotbarComponent.contents[i].init();
     };
@@ -123,8 +132,8 @@ function init() {
     var comp = {
         posX: 200,
         posY: 100,
-        'width': 15,
-        'height': 15,
+        width: 15,
+        height: 15,
         offsetX: 0,
         offsetY: 0,
         color: 'blue',
@@ -137,8 +146,8 @@ function init() {
     var comp = {
         posX: 200,
         posY: 115,
-        'width': 15,
-        'height': 15,
+        width: 15,
+        height: 15,
         offsetX: 0,
         offsetY: 0,
         color: 'red',
@@ -147,6 +156,17 @@ function init() {
         zIndex: 2
     };
     objects.push(new Object(comp));
+
+    var comp = { // WIP (test pickup system --> inventory sorting, etc)
+        posX: -300,
+        posY: 200,
+        width: 43,
+        height: 11,
+        color: 'green',
+        camera_reference: player,
+        flags: [],
+        zIndex: 1
+    };
 
 
     window.addEventListener('wheel', function(e) {
@@ -161,6 +181,7 @@ function init() {
         } else if (invPos < 0) {
             invPos = maxInvPos;
         };
+        console.log(invPos)
 
         player.hotbar.contents[lastInvPos].removeFlag('drawModel');
         player.hotbar.contents[invPos].addFlag('drawModel');
