@@ -12,7 +12,7 @@ const keyMap = {
     40: 'down', // down arrow
     83: 'down', // s
 };
-var globalFlags = ['drawCrosshair'];
+var globalFlags = ['drawCrosshair', 'drawHotbar'];
 var cameraScaleX = 1;
 var cameraScaleY = 1;
 
@@ -27,6 +27,8 @@ var crosshair = {
     posX: 0,
     posY: 0,
     src: 'static\\assets\\art\\Scav_Crosshair1.svg',
+    height: 30,
+    width: 30,
     getAngleToPlayer: function(self) {
         var numer = self.posY - height/2;
         var denom = self.posX - width/2;
@@ -42,15 +44,51 @@ var crosshair = {
         };
     },
     draw: function(self) {
-        context.drawImage(crosshair.img, crosshair.posX - 15, crosshair.posY - 15, 30, 30);
+        context.drawImage(crosshair.img, crosshair.posX - 15, crosshair.posY - 15, crosshair.width, crosshair.height);
     },
     init: function(self) {
         var img = new Image();
         img.onload = function() {
-            context.drawImage(img, crosshair.posX, crosshair.posY, 50, 50);
+            context.drawImage(img, crosshair.posX - 15, crosshair.posY - 15, crosshair.width, crosshair.height);
         };
         img.src = crosshair.src;
         crosshair.img = img;
+    }
+};
+
+
+var visualHotbar = {
+    width: 512,
+    height: 64,
+    modelWidth: 50,
+    modelHeight: 50,
+    src: 'static\\assets\\art\\Scav_Hotbar1.svg',
+    draw: function(self) {
+        context.drawImage(self.img, self.posX, self.posY, self.width, self.height);
+        for (var i = 0; i < player.hotbar.component.contents.length; i ++) {
+            var modelDrawX = self.posX;
+            var modelDrawY = self.posY;
+            if (i < 2) {
+                modelDrawX += i * self.modelWidth * 2;
+            } else {
+                modelDrawX += (self.modelWidth * 4) + self.modelWidth * i;
+            };
+            context.drawImage(player.hotbar.component.contents[i].hotbarImage, modelDrawX, modelDrawY, self.modelWidth, self.modelHeight);
+        };
+    },
+    init: function(self) {
+        self.posX = window.width/2 - self.width/2
+        self.posY = 10;
+
+        var img = new Image();
+        visualHotbar.img = img;
+        img.src = self.src;
+
+        for (var i = 0; i < player.hotbar.component.contents.length; i ++) { 
+            var img = new Image();
+            img.src = player.hotbar.component.contents[i].src;
+            player.hotbar.component.contents[i].hotbarImage = img;
+        };
     }
 };
 
@@ -68,7 +106,7 @@ function init() {
     };
 
 
-    crosshair.init();
+    crosshair.init(crosshair);
 
 
     var comp = {
@@ -114,12 +152,12 @@ function init() {
     };
     player.hotbar.contents.push(new Equipment(equipComp));
     var equipComp = {
-        width: 0,
-        height: 0,
+        width: 43,
+        height: 11,
         offsetX: 0,
         offsetY: 0,
         src: 'static\\assets\\art\\Scav_Gun1.svg',
-        flags: ['doesRotate', 'drawModel'],
+        flags: ['doesRotate'],
         player: player,
         container: player.hotbar
     };
@@ -157,6 +195,10 @@ function init() {
     };
     objects.push(new Object(comp));
 
+
+    visualHotbar.init(visualHotbar);
+
+
     var comp = { // WIP (test pickup system --> inventory sorting, etc)
         posX: -300,
         posY: 200,
@@ -183,8 +225,12 @@ function init() {
         };
         console.log(invPos)
 
-        player.hotbar.contents[lastInvPos].removeFlag('drawModel');
-        player.hotbar.contents[invPos].addFlag('drawModel');
+        if (player.hotbar.contents[lastInvPos] != undefined) {
+            player.hotbar.contents[lastInvPos].removeFlag('drawModel');
+        };
+        if (player.hotbar.contents[invPos] != undefined) {
+            player.hotbar.contents[invPos].addFlag('drawModel');
+        };
     });
 
 
@@ -214,10 +260,14 @@ function gameloop(timestamp) {
             } else { return 0 };
         });
         for (var i in drawnObjects) {
-            drawnObjects[i].draw();
+            drawnObjects[i].draw(drawnObjects[i]);
         };
 
         if (globalFlags.includes('drawCrosshair')) { crosshair.draw(crosshair); };
+        if (globalFlags.includes('drawHotbar')) { visualHotbar.draw(visualHotbar); };
+        // for (var i = 0; i < maxInvPos; i++) {
+        //     context.drawImage(self.img, self.posX + ((i * self.cellWidth * 2) + 1), self.posY, self.cellWidth, self.cellHeight);
+        // };
         if (globalFlags.includes('drawScreenCenter')) { drawScreenCenter(); };
 
 
